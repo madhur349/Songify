@@ -39,7 +39,7 @@ function formatTime(seconds) {
 async function getSongs(folder) {
     
 currfolder= folder;
-let a=await fetch(`/${folder}/`)
+    let a=await fetch(`/${folder}/`)
     let response= await a.text();
     console.log(response)
     let div = document.createElement("div")
@@ -99,8 +99,8 @@ async function displayAlbums(){
         let folders=[]
         if(element.href.includes("/songs/")){
            let folder=element.href.split("/").slice(-2)[1]
-           
-           let a=await fetch(`/${folder}/info.json`)
+           console.log(folder)
+            let a=await fetch(`/songs/${folder}/info.json`)
             let response= await a.json();
             cardContainer.innerHTML= cardContainer.innerHTML+`<div data-folder="${folder}" class="card">
             <div class="play">
