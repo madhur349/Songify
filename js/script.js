@@ -26,20 +26,20 @@ function formatTime(seconds) {
         currentSong.play();
         play.src="img/pause.svg"
        }
-       
-       
+
+
        document.querySelector(".songinfo").innerHTML=decodeURI(track)
        document.querySelector(".songtime").innerHTML="00:00/00:00"
 
-       
+
     }
 
 
 
 async function getSongs(folder) {
-    
+
 currfolder= folder;
-    let a=await fetch(`/${folder}/`)
+    let a=await fetch(`http://127.0.0.1:5500/${folder}/`)
     let response= await a.text();
     console.log(response)
     let div = document.createElement("div")
@@ -51,10 +51,10 @@ currfolder= folder;
         if (element.href.endsWith(".mp3")){
             songs.push(element.href.split(`/${folder}/`)[1])
         }
-        
+
     }
 
-   
+
 
         //Show all the songs in the playlist
         let songUL = document.querySelector(".songsList").getElementsByTagName("ul")[0]
@@ -71,7 +71,7 @@ currfolder= folder;
               <img src="img/play1.svg" class="invert" alt="">
             </div> </li>`;
         }
-    
+
      //Attach an event listener to each song
      Array.from(document.querySelector(".songsList").getElementsByTagName("li")).forEach(e => {
         e.addEventListener("click", element => {
@@ -84,23 +84,23 @@ currfolder= folder;
 }
 
 async function displayAlbums(){
-    let a=await fetch(`/songs/`)
+    let a=await fetch(`http://127.0.0.1:5500/songs/`)
     let response= await a.text();
     let div = document.createElement("div")
     div.innerHTML= response;
     let anchors=div.getElementsByTagName("a")
     let cardContainer=document.querySelector(".cardContainer")
-    
+
      let array= Array.from(anchors)
      for (let index = 0; index < array.length; index++) {
         const element = array[index];
-        
-     
+
+
         let folders=[]
         if(element.href.includes("/songs/")){
            let folder=element.href.split("/").slice(-2)[1]
            console.log(folder)
-            let a=await fetch(`/songs/${folder}/info.json`)
+            let a=await fetch(`http://127.0.0.1:5500/songs/${folder}/info.json`)
             let response= await a.json();
             cardContainer.innerHTML= cardContainer.innerHTML+`<div data-folder="${folder}" class="card">
             <div class="play">
@@ -127,7 +127,7 @@ Array.from(document.getElementsByClassName("card")).forEach(e=>{
 }
 
 async function main() {
-    
+
     //GET THE LIST OF ALL SONGS
     await getSongs("songs/cs")
     playMusic(songs[0],true)
@@ -165,10 +165,10 @@ document.querySelector(".seekbar").addEventListener("click", e => {
     console.log(e);
     const seekbarWidth = e.target.getBoundingClientRect().width;
     const clickPosition = e.offsetX;
-    
+
     // Update the position of the "circle" element
     document.querySelector(".circle").style.left = (clickPosition / seekbarWidth) * 100 + "%";
-    
+
     // Calculate and set the playback time of currentSong
     const newPlaybackTime = (currentSong.duration) * (clickPosition / seekbarWidth);
     currentSong.currentTime = newPlaybackTime;
@@ -177,13 +177,13 @@ document.querySelector(".seekbar").addEventListener("click", e => {
 
 //Add an event listener for hamburger
 document.querySelector(".hamburger").addEventListener("click",()=>{
-    
+
     document.querySelector(".left").style.left= "0%";
 })
 
 //Add an event listener for close
 document.querySelector(".close").addEventListener("click",()=>{
-    
+
     document.querySelector(".left").style.left= "-110%";
 })
 
@@ -193,20 +193,20 @@ previous.addEventListener("click",()=>{
     if((index-1) >=0 ){
      playMusic(songs[index-1])
     }
-     
+
  })
-   
-    
+
+
 
 
 next.addEventListener("click",()=>{
     currentSong.pause()
-   
+
     let index = songs.indexOf(currentSong.src.split("/").slice(-1) [0]);
    if((index+1) < songs.length){
     playMusic(songs[index+1])
    }
-    
+
 })
 
 
@@ -215,7 +215,7 @@ next.addEventListener("click",()=>{
 document.getElementById("volume").addEventListener("input", function() {
     // Get the volume value from the range input (value is between 0 and 100)
     const volumeValue = parseInt(this.value) / 100;
-    
+
     // Set the volume of the audio element to the calculated volume value
     currentSong.volume = volumeValue;
 });
